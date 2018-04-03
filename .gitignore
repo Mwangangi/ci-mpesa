@@ -1,2 +1,2 @@
-app/application/logs/*
-app/application/config/mpesa.php
+application/logs/*
+application/config/mpesa.php
