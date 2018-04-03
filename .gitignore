@@ -1,2 +1,6 @@
 application/logs/*
+!application/logs/index.html
+!application/*/.htaccess
+
 application/config/mpesa.php
+
