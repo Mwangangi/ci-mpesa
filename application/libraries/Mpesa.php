@@ -38,9 +38,9 @@ class Mpesa
     public function __construct()
     {
         $this->CI = &get_instance();
-        $this->config->load('mpesa', true);
+        $this->CI->config->load('mpesa', true);
 
-        $mpesa_config = $this->config->item('mpesa');
+        $mpesa_config = $this->CI->config->item('mpesa');
 
         if (!isset($mpesa_config['consumer_key']) || !isset($mpesa_config['consumer_secret']) || !isset($mpesa_config['application_status'])) {
             die("please ensure that your config file has values for all variables");
@@ -69,7 +69,7 @@ class Mpesa
      * use this function to generate a token
      * @return mixed
      */
-    public static function generateToken()
+    private function generateToken()
     {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $this->tokenUrl);
@@ -100,7 +100,7 @@ class Mpesa
      * @param $Occasion |     Optional Parameter
      * @return mixed|string
      */
-    public static function reversal($CommandID, $Initiator, $SecurityCredential, $TransactionID, $Amount, $ReceiverParty, $RecieverIdentifierType, $ResultURL, $QueueTimeOutURL, $Remarks, $Occasion)
+    public function reversal($CommandID, $Initiator, $SecurityCredential, $TransactionID, $Amount, $ReceiverParty, $RecieverIdentifierType, $ResultURL, $QueueTimeOutURL, $Remarks, $Occasion)
     {
         $url = $this->apiUrl . 'reversal/v1/request';
         $data = array(
@@ -132,7 +132,7 @@ class Mpesa
      * @param $Occasion |     Optional
      * @return string
      */
-    public static function b2c($InitiatorName, $SecurityCredential, $CommandID, $Amount, $PartyA, $PartyB, $Remarks, $QueueTimeOutURL, $ResultURL, $Occasion)
+    public function b2c($InitiatorName, $SecurityCredential, $CommandID, $Amount, $PartyA, $PartyB, $Remarks, $QueueTimeOutURL, $ResultURL, $Occasion)
     {
 
         $url = $this->apiUrl . 'b2c/v1/paymentrequest';
@@ -152,17 +152,17 @@ class Mpesa
         return $this->_curl_request($url, $data);
     }
     /**
-     * Use this function to initiate a B2C transaction
-     * @param $ShortCode | 6 digit M-Pesa Till Number or PayBill Number
+     * Use this function to initiate a C2B transaction
+     * @param $ShortCode | 6 digit M-Pesa Till Number or PayBill number
      * @param $CommandID | Unique command for each transaction type.
-     * @param $Amount | The amount been transacted.
-     * @param $Msisdn | MSISDN (phone number) sending the transaction, start with country code without the plus(+) sign.
-     * @param $BillRefNumber |     Bill Reference Number (Optional).
+     *            values: CustomerPayBillOnline,CustomerBuyGoodsOnline
+     * @param $Amount | The amount being transacted.
+     * @param $Msisdn | MSISDN (phone number) sending the transaction, start with country code without the plus(+) sign. e.g 254XXXXXXXXX
+     * @param $BillRefNumber |  Bill Reference Number (Optional).
      * @return mixed|string
      */
-    public static function c2b($ShortCode, $CommandID, $Amount, $Msisdn, $BillRefNumber)
+    public function c2b($ShortCode, $CommandID, $Amount, $Msisdn, $BillRefNumber)
     {
-
         $url = $this->apiUrl . 'c2b/v1/simulate';
         $data = array(
             'ShortCode' => $ShortCode,
@@ -186,7 +186,7 @@ class Mpesa
      * @param $ResultURL |     The path that stores information of transaction
      * @return mixed|string
      */
-    public static function accountBalance($CommandID, $Initiator, $SecurityCredential, $PartyA, $IdentifierType, $Remarks, $QueueTimeOutURL, $ResultURL)
+    public function accountBalance($CommandID, $Initiator, $SecurityCredential, $PartyA, $IdentifierType, $Remarks, $QueueTimeOutURL, $ResultURL)
     {
 
         $url = $this->apiUrl . 'accountbalance/v1/query';
@@ -322,7 +322,7 @@ class Mpesa
      * @param $timestamp | Timestamp
      * @return mixed|string
      */
-    public static function STKPushQuery($checkoutRequestID, $businessShortCode, $password, $timestamp)
+    public function STKPushQuery($checkoutRequestID, $businessShortCode, $password, $timestamp)
     {
         $url = $this->apiUrl . 'stkpushquery/v1/query';
         $data = array(
