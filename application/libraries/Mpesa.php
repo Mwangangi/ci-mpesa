@@ -87,24 +87,25 @@ class Mpesa
 
     /**
      * Use this function to initiate a reversal request
-     * @param $CommandID | Takes only 'TransactionReversal' Command id
      * @param $Initiator | The name of Initiator to initiating  the request
-     * @param $SecurityCredential |     Encrypted Credential of user getting transaction amount
+     * @param $SecurityCredential | Password of API operator(encrypted using the public key certificate).
+     *         Get details from MPESA portal
      * @param $TransactionID | Unique Id received with every transaction response.
      * @param $Amount | Amount
      * @param $ReceiverParty | Organization /MSISDN sending the transaction
      * @param $RecieverIdentifierType | Type of organization receiving the transaction
+     *         (1 => MSISDN, 2 => Till Number, 4 => Shortcode(Paybill))
      * @param $ResultURL | The path that stores information of transaction
      * @param $QueueTimeOutURL | The path that stores information of time out transaction
      * @param $Remarks | Comments that are sent along with the transaction.
      * @param $Occasion |     Optional Parameter
      * @return mixed|string
      */
-    public function reversal($CommandID, $Initiator, $SecurityCredential, $TransactionID, $Amount, $ReceiverParty, $RecieverIdentifierType, $ResultURL, $QueueTimeOutURL, $Remarks, $Occasion)
+    public function reversal($Initiator, $SecurityCredential, $TransactionID, $Amount, $ReceiverParty, $RecieverIdentifierType, $ResultURL, $QueueTimeOutURL, $Remarks)
     {
         $url = $this->apiUrl . 'reversal/v1/request';
         $data = array(
-            'CommandID' => $CommandID,
+            'CommandID' => "TransactionReversal",
             'Initiator' => $Initiator,
             'SecurityCredential' => $SecurityCredential,
             'TransactionID' => $TransactionID,
@@ -122,7 +123,8 @@ class Mpesa
     /**
      * @param $InitiatorName |     This is the credential/username used to authenticate the transaction request.
      * @param $SecurityCredential | Encrypted password for the initiator to autheticate the transaction request
-     * @param $CommandID | Unique command for each transaction type e.g. SalaryPayment, BusinessPayment, PromotionPayment
+     * @param $CommandID | Unique command for each transaction type
+     *          values: SalaryPayment, BusinessPayment, PromotionPayment
      * @param $Amount | The amount being transacted
      * @param $PartyA | Organization’s shortcode initiating the transaction.
      * @param $PartyB | Phone number receiving the transaction
@@ -176,7 +178,6 @@ class Mpesa
 
     /**
      * Use this to initiate a balance inquiry request
-     * @param $CommandID | A unique command passed to the M-Pesa system.
      * @param $Initiator |     This is the credential/username used to authenticate the transaction request.
      * @param $SecurityCredential | Encrypted password for the initiator to autheticate the transaction request
      * @param $PartyA | Type of organization receiving the transaction
@@ -186,9 +187,9 @@ class Mpesa
      * @param $ResultURL |     The path that stores information of transaction
      * @return mixed|string
      */
-    public function accountBalance($CommandID, $Initiator, $SecurityCredential, $PartyA, $IdentifierType, $Remarks, $QueueTimeOutURL, $ResultURL)
+    public function accountBalance($Initiator, $SecurityCredential, $PartyA, $IdentifierType, $Remarks, $QueueTimeOutURL, $ResultURL)
     {
-
+        $CommandID = "AccountBalance";
         $url = $this->apiUrl . 'accountbalance/v1/query';
         $data = array(
             'CommandID' => $CommandID,
@@ -294,7 +295,7 @@ class Mpesa
     {
         $url = $this->apiUrl . 'stkpush/v1/processrequest';
 
-        $timestamp = '20' . date("ymdhis");
+        $timestamp = date("Ymdhis");
         $password = base64_encode($BusinessShortCode . $LipaNaMpesaPasskey . $timestamp);
 
         $data = array(
@@ -318,12 +319,15 @@ class Mpesa
      * Use this function to initiate an STKPush Status Query request.
      * @param $checkoutRequestID | Checkout RequestID
      * @param $businessShortCode | Business Short Code
-     * @param $password | Password
+     *  @param $LipaNaMpesaPasskey | The password linked to businessShortCode
      * @param $timestamp | Timestamp
      * @return mixed|string
      */
-    public function STKPushQuery($checkoutRequestID, $businessShortCode, $password, $timestamp)
+    public function STKPushQuery($checkoutRequestID, $businessShortCode, $LipaNaMpesaPasskey)
     {
+        $timestamp = date("Ymdhis");
+        $password = base64_encode($businessShortCode . $LipaNaMpesaPasskey . $timestamp);
+
         $url = $this->apiUrl . 'stkpushquery/v1/query';
         $data = array(
             'BusinessShortCode' => $businessShortCode,
@@ -346,15 +350,6 @@ class Mpesa
         header('Content-Type: application/json');
 
         echo json_encode($resultArray);
-    }
-
-    /**
-     *Use this function to get callback data posted in callback routes
-     */
-    public function getDataFromCallback()
-    {
-        $callbackJSONData = file_get_contents('php://input');
-        return $callbackJSONData;
     }
 
     private function _curl_request($url, $curl_post_data)
