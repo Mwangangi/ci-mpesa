@@ -85,6 +85,18 @@ class Mpesa
         return json_decode($curl_response)->access_token;
     }
 
+    public function registerUrl($shortCode, $responseType, $validateUrl, $confirmUrl)
+    {
+        $url = $this->apiUrl . 'c2b/v1/registerurl';
+        $data = array(
+            'ShortCode' => $shortCode,
+            'ResponseType' => $responseType, //Completed or Cancelled
+            'ConfirmationURL' => $confirmUrl,
+            'ValidationURL' => $validateUrl,
+        );
+        return $this->_curl_request($url, $data);
+    }
+
     /**
      * Use this function to initiate a reversal request
      * @param $Initiator | The name of Initiator to initiating  the request

@@ -111,19 +111,19 @@ class Mpesa_callbacks
         $lastName = $callbackData->LastName;
 
         $result = [
-            $transTime => $transTime,
-            $transAmount => $transAmount,
-            $businessShortCode => $businessShortCode,
-            $billRefNumber => $billRefNumber,
-            $invoiceNumber => $invoiceNumber,
-            $orgAccountBalance => $orgAccountBalance,
-            $thirdPartyTransID => $thirdPartyTransID,
-            $MSISDN => $MSISDN,
-            $firstName => $firstName,
-            $lastName => $lastName,
-            $middleName => $middleName,
-            $transID => $transID,
-            $transactionType => $transactionType,
+            "transTime" => $transTime,
+            "transAmount" => $transAmount,
+            "businessShortCode" => $businessShortCode,
+            "billRefNumber" => $billRefNumber,
+            "invoiceNumber" => $invoiceNumber,
+            "orgAccountBalance" => $orgAccountBalance,
+            "thirdPartyTransID" => $thirdPartyTransID,
+            "MSISDN" => $MSISDN,
+            "firstName" => $firstName,
+            "lastName" => $lastName,
+            "middleName" => $middleName,
+            "transID" => $transID,
+            "transactionType" => $transactionType,
 
         ];
 
@@ -154,22 +154,21 @@ class Mpesa_callbacks
         $lastName = $callbackData->LastName;
 
         $result = [
-            $transTime => $transTime,
-            $transAmount => $transAmount,
-            $businessShortCode => $businessShortCode,
-            $billRefNumber => $billRefNumber,
-            $invoiceNumber => $invoiceNumber,
-            $orgAccountBalance => $orgAccountBalance,
-            $thirdPartyTransID => $thirdPartyTransID,
-            $MSISDN => $MSISDN,
-            $firstName => $firstName,
-            $lastName => $lastName,
-            $middleName => $middleName,
-            $transID => $transID,
-            $transactionType => $transactionType,
+            "transTime" => $transTime,
+            "transAmount" => $transAmount,
+            "businessShortCode" => $businessShortCode,
+            "billRefNumber" => $billRefNumber,
+            "invoiceNumber" => $invoiceNumber,
+            "orgAccountBalance" => $orgAccountBalance,
+            "thirdPartyTransID" => $thirdPartyTransID,
+            "MSISDN" => $MSISDN,
+            "firstName" => $firstName,
+            "lastName" => $lastName,
+            "middleName" => $middleName,
+            "transID" => $transID,
+            "transactionType" => $transactionType,
 
         ];
-
         return json_encode($result);
     }
 
@@ -246,13 +245,13 @@ class Mpesa_callbacks
         $merchantRequestID = $callbackData->Body->stkCallback->MerchantRequestID;
         $checkoutRequestID = $callbackData->Body->stkCallback->CheckoutRequestID;
 
-        $callbackMeta =$callbackData->Body->stkCallback->CallbackMetadata->Item;
-        
-        $amount =$callbackMeta[0]->Value;
-        $mpesaReceiptNumber= $callbackMeta[1]->Value;
-        $balance= $callbackMeta[2]->Name;
-        $transactionDate=$callbackMeta[3]->Value;
-        $phoneNumber=$callbackMeta[4]->Value;
+        $callbackMeta = $callbackData->Body->stkCallback->CallbackMetadata->Item;
+
+        $amount = $callbackMeta[0]->Value;
+        $mpesaReceiptNumber = $callbackMeta[1]->Value;
+        $balance = $callbackMeta[2]->Name;
+        $transactionDate = $callbackMeta[3]->Value;
+        $phoneNumber = $callbackMeta[4]->Value;
 
         $result = [
             "resultDesc" => $resultDesc,
